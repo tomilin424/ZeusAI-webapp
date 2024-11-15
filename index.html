@@ -39,6 +39,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
         }
         .model-icon {
             width: 32px;
@@ -59,12 +60,19 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+        .voice-button:hover {
+            background-color: #3a54d6;
+        }
         .chat-item {
             background-color: #1E1F25;
             border-radius: 14px;
             padding: 16px;
             margin: 12px 0;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .chat-item:hover {
+            background-color: #2a2b33;
         }
         .chat-item h3 {
             margin: 0 0 8px 0;
@@ -98,29 +106,6 @@
         .message-input::placeholder {
             color: #8E8E93;
         }
-        .voice-button:hover {
-            background-color: #3a54d6;
-        }
-        .chat-item:hover {
-            background-color: #2a2b33;
-        }
-        .new-chat-button {
-            background-color: #4B6BFB;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            width: calc(100% - 32px);
-            margin-top: 16px;
-            cursor: pointer;
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            transition: background-color 0.3s;
-        }
-        .new-chat-button:hover {
-            background-color: #3a54d6;
-        }
         .settings-menu {
             position: fixed;
             top: 0;
@@ -129,21 +114,26 @@
             height: 100%;
             background-color: #1E1F25;
             padding: 16px;
-            transition: right 0.3s;
+            transition: right 0.3s ease;
             z-index: 1000;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
         }
         .settings-menu.active {
             right: 0;
         }
         .settings-item {
             padding: 16px;
-            border-radius: 12px;
             margin: 8px 0;
             background-color: #17181C;
+            border-radius: 12px;
             cursor: pointer;
+            transition: background-color 0.3s;
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .settings-item:hover {
+            background-color: #2a2b33;
         }
         .voice-screen {
             position: fixed;
@@ -192,87 +182,18 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
-        .model-selector {
-            background-color: #1E1F25;
-            border-radius: 12px;
-            padding: 12px;
-            margin: 16px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .model-icon {
-            width: 24px;
-            height: 24px;
-            background-color: #4B6BFB;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .input-area {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            display: flex;
-            gap: 8px;
-        }
-        .message-input {
-            flex-grow: 1;
-            background-color: #1E1F25;
-            border: none;
-            border-radius: 12px;
-            padding: 12px;
-            color: white;
-            font-size: 16px;
-        }
-        .send-button {
-            background-color: #4B6BFB;
-            border: none;
-            border-radius: 12px;
-            width: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .payment-info {
-            padding: 12px;
-            background-color: #2a2b33;
-            border-radius: 8px;
-            margin-top: 8px;
-        }
-        .balance-info {
-            color: #4B6BFB;
-            font-weight: bold;
-        }
-        .email-input {
-            width: 100%;
-            background-color: #2a2b33;
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            color: white;
-            margin-top: 8px;
-        }
         .language-selector {
             display: flex;
             gap: 8px;
         }
         .language-option {
-            padding: 8px;
+            padding: 8px 16px;
             background-color: #2a2b33;
             border-radius: 8px;
             cursor: pointer;
         }
         .language-option.active {
             background-color: #4B6BFB;
-        }
-        .referral-info {
-            font-size: 14px;
-            color: #8E8E93;
-            margin-top: 4px;
         }
     </style>
 </head>
@@ -293,28 +214,17 @@
     </div>
 
     <div id="chats">
-        <div class="chat-item" onclick="openChat(2)">
-            <h3>Чат #2</h3>
-            <p style="color: #8E8E93">Чат начат с AI-моделью GPT-4o Mini</p>
-        </div>
-        <div class="chat-item" onclick="openChat(1)">
-            <h3>Чат #1</h3>
-            <p style="color: #8E8E93">Чат начат с AI-моделью GPT-4o Mini</p>
-        </div>
+        <!-- Чаты будут добавляться динамически -->
     </div>
 
     <div class="input-area">
         <input type="text" class="message-input" placeholder="Что вас интересует?">
-        <button class="send-button">➤</button>
     </div>
 
     <div class="settings-menu" id="settingsMenu">
         <div class="settings-item">
             <span>Подписка</span>
-            <div class="payment-info">
-                <div>1 TON или 5 USDT / месяц</div>
-                <button onclick="payWithCrypto()">Оплатить</button>
-            </div>
+            <span>1 TON / 5 USDT</span>
         </div>
         <div class="settings-item">
             <span>Баланс запросов</span>
@@ -322,7 +232,7 @@
         </div>
         <div class="settings-item">
             <span>Пригласить друга</span>
-            <div class="referral-info">30% кешбэк с покупок друзей</div>
+            <span>30% кешбэк</span>
         </div>
         <div class="settings-item">
             <span>Язык</span>
@@ -333,7 +243,7 @@
         </div>
         <div class="settings-item">
             <span>Почта</span>
-            <input type="email" class="email-input" placeholder="Введите email" onchange="saveEmail(this.value)">
+            <input type="email" class="email-input" placeholder="Email">
         </div>
         <div class="settings-item" onclick="openSupport()">
             <span>Поддержка</span>
@@ -361,105 +271,119 @@
         tg.ready();
 
         let isRecording = false;
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let currentLanguage = 'ru';
-        
-        // Загружаем историю чатов
-        function loadChatHistory() {
-            const chatHistory = localStorage.getItem('chatHistory');
-            if (chatHistory) {
-                const chats = JSON.parse(chatHistory);
-                const chatsContainer = document.getElementById('chats');
-                chatsContainer.innerHTML = '';
-                chats.forEach((chat, index) => {
-                    chatsContainer.innerHTML += `
-                        <div class="chat-item" onclick="openChat(${index + 1})">
-                            <h3>Чат #${index + 1}</h3>
-                            <p>Чат начат с AI-моделью GPT-4o Mini</p>
-                        </div>
-                    `;
-                });
-            }
+        let recordingTimer;
+        let startTime;
+
+        // Функции для работы с интерфейсом
+        function toggleSettings() {
+            const menu = document.getElementById('settingsMenu');
+            menu.classList.toggle('active');
         }
 
-        // Запись голоса
-        async function startVoiceRecording() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-
-                mediaRecorder.ondataavailable = (event) => {
-                    audioChunks.push(event.data);
-                };
-
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    const formData = new FormData();
-                    formData.append('audio', audioBlob);
-                    
-                    try {
-                        // Здесь будет отправка аудио на сервер для распознавания
-                        // и последующая отправка текста в GPT
-                        const response = await fetch('/api/transcribe', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        const text = await response.text();
-                        sendMessage(text);
-                    } catch (error) {
-                        console.error('Error processing voice:', error);
-                    }
-                };
-
-                mediaRecorder.start();
-                isRecording = true;
-                document.getElementById('voiceScreen').classList.add('active');
-                startTime = Date.now();
-                updateTimer();
-            } catch (error) {
-                console.error('Error starting voice recording:', error);
-            }
+        function startVoiceRecording() {
+            const screen = document.getElementById('voiceScreen');
+            screen.classList.add('active');
+            isRecording = true;
+            startTime = Date.now();
+            updateTimer();
         }
 
         function stopVoiceRecording() {
-            if (mediaRecorder && isRecording) {
-                mediaRecorder.stop();
-                isRecording = false;
-                document.getElementById('voiceScreen').classList.remove('active');
-                clearTimeout(recordingTimer);
+            const screen = document.getElementById('voiceScreen');
+            screen.classList.remove('active');
+            isRecording = false;
+            clearTimeout(recordingTimer);
+        }
+
+        function updateTimer() {
+            if (!isRecording) return;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.querySelector('.voice-timer').textContent = `${timeStr} / 02:00`;
+            
+            if (elapsed < 120) {
+                recordingTimer = setTimeout(updateTimer, 1000);
+            } else {
+                stopVoiceRecording();
             }
         }
 
         function changeLanguage(lang) {
-            currentLanguage = lang;
-            document.querySelectorAll('.language-option').forEach(el => {
-                el.classList.toggle('active', el.textContent === lang.toUpperCase());
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.classList.toggle('active', option.textContent.toLowerCase() === lang.toUpperCase());
             });
-            // Здесь логика перевода интерфейса
+            localStorage.setItem('language', lang);
+            updateInterface(lang);
         }
 
-        function saveEmail(email) {
-            localStorage.setItem('userEmail', email);
+        function updateInterface(lang) {
+            const translations = {
+                ru: {
+                    voiceAssistant: '🎤 Голосовой ассистент',
+                    inputPlaceholder: 'Что вас интересует?',
+                    subscription: 'Подписка',
+                    balance: 'Баланс запросов',
+                    inviteFriend: 'Пригласить друга',
+                    language: 'Язык',
+                    email: 'Почта',
+                    support: 'Поддержка'
+                },
+                en: {
+                    voiceAssistant: '🎤 Voice Assistant',
+                    inputPlaceholder: 'What interests you?',
+                    subscription: 'Subscription',
+                    balance: 'Request Balance',
+                    inviteFriend: 'Invite Friend',
+                    language: 'Language',
+                    email: 'Email',
+                    support: 'Support'
+                }
+            };
+
+            const t = translations[lang];
+            document.querySelector('.voice-button span:first-child').textContent = t.voiceAssistant;
+            document.querySelector('.message-input').placeholder = t.inputPlaceholder;
+            // Обновляем остальные элементы интерфейса
         }
 
         function openSupport() {
             window.open('https://t.me/goodluck003', '_blank');
         }
 
-        function payWithCrypto() {
-            // Здесь будет логика оплаты криптовалютой
-        }
+        // Обработчики событий
+        document.querySelector('.message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                tg.sendData(JSON.stringify({
+                    action: 'sendMessage',
+                    text: this.value.trim()
+                }));
+                this.value = '';
+            }
+        });
 
-        // Загружаем историю при старте
-        loadChatHistory();
-        
-        // Загружаем сохраненный email
-        const savedEmail = localStorage.getItem('userEmail');
-        if (savedEmail) {
-            document.querySelector('.email-input').value = savedEmail;
-        }
+        document.querySelector('.email-input').addEventListener('change', function() {
+            localStorage.setItem('userEmail', this.value);
+        });
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedEmail = localStorage.getItem('userEmail');
+            if (savedEmail) {
+                document.querySelector('.email-input').value = savedEmail;
+            }
+
+            const savedLang = localStorage.getItem('language') || 'ru';
+            changeLanguage(savedLang);
+        });
+
+        // Обработка сообщений от основного приложения
+        tg.onEvent('mainButtonClicked', function(){
+            tg.sendData(JSON.stringify({action: 'mainButtonClicked'}));
+        });
     </script>
 </body>
 </html> 
