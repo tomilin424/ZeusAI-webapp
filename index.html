@@ -22,6 +22,7 @@
         .settings-icon {
             font-size: 24px;
             color: #8E8E93;
+            cursor: pointer;
         }
         .voice-button {
             background-color: #4B6BFB;
@@ -31,6 +32,10 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .voice-button:hover {
+            background-color: #3a54d6;
         }
         .chat-item {
             background-color: #1E1F25;
@@ -38,6 +43,10 @@
             padding: 16px;
             margin: 8px 0;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .chat-item:hover {
+            background-color: #2a2b33;
         }
         .new-chat-button {
             background-color: #4B6BFB;
@@ -45,44 +54,281 @@
             border: none;
             border-radius: 12px;
             padding: 16px;
-            width: 100%;
+            width: calc(100% - 32px);
             margin-top: 16px;
             cursor: pointer;
             position: fixed;
             bottom: 16px;
             left: 16px;
+            transition: background-color 0.3s;
+        }
+        .new-chat-button:hover {
+            background-color: #3a54d6;
+        }
+        .settings-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: #1E1F25;
+            padding: 16px;
+            transition: right 0.3s;
+            z-index: 1000;
+        }
+        .settings-menu.active {
+            right: 0;
+        }
+        .settings-item {
+            padding: 16px;
+            border-radius: 12px;
+            margin: 8px 0;
+            background-color: #17181C;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .voice-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #17181C;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .voice-screen.active {
+            display: flex;
+        }
+        .voice-indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .voice-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #4B6BFB;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        .voice-timer {
+            margin: 16px 0;
+            font-size: 18px;
+        }
+        .voice-control {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #4B6BFB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .model-selector {
+            background-color: #1E1F25;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .model-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #4B6BFB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
             right: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        .message-input {
+            flex-grow: 1;
+            background-color: #1E1F25;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+        }
+        .send-button {
+            background-color: #4B6BFB;
+            border: none;
+            border-radius: 12px;
+            width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>ZeusAI</h1>
-        <div class="settings-icon">⚙️</div>
+        <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
     </div>
 
-    <div class="voice-button">
+    <div class="model-selector">
+        <div class="model-icon">🤖</div>
+        <span>GPT-4o Mini</span>
+    </div>
+
+    <div class="voice-button" onclick="startVoiceRecording()">
         <span>🎤 Голосовой ассистент</span>
         <span style="margin-left: auto">✨</span>
     </div>
 
     <div id="chats">
-        <div class="chat-item">
+        <div class="chat-item" onclick="openChat(2)">
             <h3>Чат #2</h3>
             <p style="color: #8E8E93">Чат начат с AI-моделью GPT-4o Mini</p>
         </div>
-        <div class="chat-item">
+        <div class="chat-item" onclick="openChat(1)">
             <h3>Чат #1</h3>
             <p style="color: #8E8E93">Чат начат с AI-моделью GPT-4o Mini</p>
         </div>
     </div>
 
-    <button class="new-chat-button">Новый чат</button>
+    <div class="input-area">
+        <input type="text" class="message-input" placeholder="Что вас интересует?">
+        <button class="send-button">➤</button>
+    </div>
+
+    <div class="settings-menu" id="settingsMenu">
+        <div class="settings-item">
+            <span>Free подписка</span>
+            <span>Бесплатно</span>
+        </div>
+        <div class="settings-item">
+            <span>Баланс запросов</span>
+            <span>∞</span>
+        </div>
+        <div class="settings-item">
+            <span>Мои роли</span>
+        </div>
+        <div class="settings-item">
+            <span>Пригласить друга</span>
+            <span>0.00₽</span>
+        </div>
+        <div class="settings-item">
+            <span>Тема</span>
+            <span>Темная</span>
+        </div>
+        <div class="settings-item">
+            <span>Язык</span>
+            <span>Русский</span>
+        </div>
+        <div class="settings-item">
+            <span>Почта</span>
+            <span>Не указана</span>
+        </div>
+        <div class="settings-item">
+            <span>Поддержка</span>
+        </div>
+        <div class="settings-item">
+            <span>Наш канал</span>
+        </div>
+    </div>
+
+    <div class="voice-screen" id="voiceScreen">
+        <div class="voice-indicator">
+            <div class="voice-dot"></div>
+            <div class="voice-dot" style="animation-delay: 0.2s"></div>
+            <div class="voice-dot" style="animation-delay: 0.4s"></div>
+            <div class="voice-dot" style="animation-delay: 0.6s"></div>
+            <div class="voice-dot" style="animation-delay: 0.8s"></div>
+        </div>
+        <div class="voice-timer">00:00 / 02:00</div>
+        <div class="voice-control" onclick="stopVoiceRecording()">
+            <span style="color: white; font-size: 24px">⏹</span>
+        </div>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
+
+        let isRecording = false;
+        let recordingTimer;
+        let startTime;
+
+        function toggleSettings() {
+            const menu = document.getElementById('settingsMenu');
+            menu.classList.toggle('active');
+        }
+
+        function startVoiceRecording() {
+            const screen = document.getElementById('voiceScreen');
+            screen.classList.add('active');
+            isRecording = true;
+            startTime = Date.now();
+            updateTimer();
+        }
+
+        function stopVoiceRecording() {
+            const screen = document.getElementById('voiceScreen');
+            screen.classList.remove('active');
+            isRecording = false;
+            clearTimeout(recordingTimer);
+        }
+
+        function updateTimer() {
+            if (!isRecording) return;
+            
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            document.querySelector('.voice-timer').textContent = `${timeStr} / 02:00`;
+            
+            if (elapsed < 120) {
+                recordingTimer = setTimeout(updateTimer, 1000);
+            } else {
+                stopVoiceRecording();
+            }
+        }
+
+        function openChat(id) {
+            tg.sendData(`open_chat:${id}`);
+        }
+
+        document.querySelector('.send-button').addEventListener('click', function() {
+            const input = document.querySelector('.message-input');
+            if (input.value.trim()) {
+                tg.sendData(`message:${input.value}`);
+                input.value = '';
+            }
+        });
+
+        document.querySelector('.message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                tg.sendData(`message:${this.value}`);
+                this.value = '';
+            }
+        });
     </script>
 </body>
-</html>
+</html> 
