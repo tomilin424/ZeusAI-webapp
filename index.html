@@ -2,226 +2,294 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ZeusAI</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            background-color: #17181C;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 20px;
-            padding-bottom: 80px;
+        :root {
+            --app-bg: #17181C;
+            --card-bg: #1E1F25;
+            --primary: #4B6BFB;
+            --text: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --spacing: 16px;
+            --border-radius: 14px;
+            --safe-area-inset-bottom: env(safe-area-inset-bottom);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--app-bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: var(--spacing);
+            padding-bottom: calc(80px + var(--safe-area-inset-bottom));
+            min-height: 100vh;
+            max-width: 768px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing);
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0;
-            margin-bottom: 30px;
+            padding: var(--spacing) 0;
         }
+
         .header h1 {
-            font-size: 32px;
-            margin: 0;
+            font-size: clamp(24px, 5vw, 32px);
+            font-weight: 700;
         }
-        .settings-icon {
-            font-size: 24px;
-            color: #8E8E93;
-            cursor: pointer;
-            padding: 8px;
-        }
+
         .model-selector {
-            background-color: #1E1F25;
-            border-radius: 14px;
-            padding: 12px 16px;
-            margin: 16px 0;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing);
             display: flex;
             align-items: center;
             gap: 12px;
-            cursor: pointer;
         }
+
         .model-icon {
             width: 32px;
             height: 32px;
-            background-color: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
         }
+
         .voice-button {
-            background-color: #4B6BFB;
-            border-radius: 14px;
-            padding: 16px;
-            margin: 16px 0;
+            background-color: var(--primary);
+            border-radius: var(--border-radius);
+            padding: var(--spacing);
             display: flex;
             align-items: center;
+            justify-content: space-between;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.2s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .voice-button:hover {
+
+        .voice-button:active {
             background-color: #3a54d6;
         }
-        .chat-item {
-            background-color: #1E1F25;
-            border-radius: 14px;
-            padding: 16px;
-            margin: 12px 0;
-            cursor: pointer;
-            transition: background-color 0.3s;
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .chat-item:hover {
+
+        .chat-item {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: var(--spacing);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .chat-item:active {
             background-color: #2a2b33;
         }
+
         .chat-item h3 {
-            margin: 0 0 8px 0;
             font-size: 18px;
-            font-weight: 600;
+            margin-bottom: 8px;
         }
+
         .chat-item p {
-            margin: 0;
+            color: var(--text-secondary);
             font-size: 14px;
-            color: #8E8E93;
         }
-        .input-area {
+
+        .input-container {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 16px 20px;
-            background-color: #17181C;
-            border-top: 1px solid #2a2b33;
+            padding: var(--spacing);
+            padding-bottom: calc(var(--spacing) + var(--safe-area-inset-bottom));
+            background-color: var(--app-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 768px;
+            margin: 0 auto;
         }
+
         .message-input {
             width: 100%;
-            background-color: #1E1F25;
+            background-color: var(--card-bg);
             border: none;
-            border-radius: 14px;
+            border-radius: var(--border-radius);
             padding: 16px;
-            color: white;
+            color: var(--text);
             font-size: 16px;
             outline: none;
+            transition: background-color 0.2s ease;
         }
+
         .message-input::placeholder {
-            color: #8E8E93;
+            color: var(--text-secondary);
         }
+
+        .message-input:focus {
+            background-color: #2a2b33;
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --spacing: 12px;
+                --border-radius: 12px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .chat-item h3 {
+                font-size: 16px;
+            }
+
+            .chat-item p {
+                font-size: 13px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .container {
+                padding: 0 var(--spacing);
+            }
+
+            .input-container {
+                max-width: 768px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        @supports (padding: max(0px)) {
+            .input-container {
+                padding-bottom: max(var(--spacing), env(safe-area-inset-bottom));
+            }
+        }
+
         .settings-menu {
             position: fixed;
             top: 0;
-            right: -300px;
-            width: 300px;
-            height: 100%;
-            background-color: #1E1F25;
-            padding: 16px;
-            transition: right 0.3s ease;
-            z-index: 1000;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-        }
-        .settings-menu.active {
-            right: 0;
-        }
-        .settings-item {
-            padding: 16px;
-            margin: 8px 0;
-            background-color: #17181C;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .settings-item:hover {
-            background-color: #2a2b33;
-        }
-        .voice-screen {
-            position: fixed;
-            top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #17181C;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
+            right: 0;
+            bottom: 0;
+            background-color: var(--app-bg);
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: var(--spacing);
+            max-width: 768px;
+            margin: 0 auto;
         }
-        .voice-screen.active {
-            display: flex;
+
+        .settings-menu.active {
+            transform: translateX(0);
         }
-        .voice-indicator {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
-        }
-        .voice-dot {
-            width: 12px;
-            height: 12px;
-            background-color: #4B6BFB;
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        .voice-timer {
-            margin: 16px 0;
-            font-size: 18px;
-        }
-        .voice-control {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #4B6BFB;
+
+        .settings-header {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: var(--spacing);
+            padding: var(--spacing) 0;
+            margin-bottom: var(--spacing);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 16px;
             cursor: pointer;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-        .language-selector {
+            padding: 8px;
             display: flex;
+            align-items: center;
             gap: 8px;
+            -webkit-tap-highlight-color: transparent;
         }
-        .language-option {
-            padding: 8px 16px;
-            background-color: #2a2b33;
-            border-radius: 8px;
-            cursor: pointer;
+
+        .back-button:active {
+            opacity: 0.7;
         }
-        .language-option.active {
-            background-color: #4B6BFB;
+
+        .settings-title {
+            font-size: 20px;
+            font-weight: 600;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 32px; /* Компенсация ширины кнопки назад для центрирования */
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>ZeusAI</h1>
-        <div class="settings-icon" onclick="toggleSettings()">⚙️</div>
+    <div class="container">
+        <header class="header">
+            <h1>ZeusAI</h1>
+            <div class="settings-icon" role="button" aria-label="Настройки">⚙️</div>
+        </header>
+
+        <div class="model-selector" role="button">
+            <div class="model-icon" aria-hidden="true">👾</div>
+            <span>GPT-4o Mini</span>
+        </div>
+
+        <button class="voice-button" aria-label="Голосовой ассистент">
+            <span>🎤 Голосовой ассистент</span>
+            <span aria-hidden="true">✨</span>
+        </button>
+
+        <div class="chat-list" role="list">
+            <div class="chat-item" role="listitem">
+                <h3>Чат #2</h3>
+                <p>Чат начат с AI-моделью GPT-4o Mini</p>
+            </div>
+            <div class="chat-item" role="listitem">
+                <h3>Чат #1</h3>
+                <p>Чат начат с AI-моделью GPT-4o Mini</p>
+            </div>
+        </div>
     </div>
 
-    <div class="model-selector">
-        <div class="model-icon">👾</div>
-        <span>GPT-4o Mini</span>
-    </div>
-
-    <div class="voice-button" onclick="startVoiceRecording()">
-        <span>🎤 Голосовой ассистент</span>
-        <span style="margin-left: auto">✨</span>
-    </div>
-
-    <div id="chats">
-        <!-- Чаты будут добавляться динамически -->
-    </div>
-
-    <div class="input-area">
-        <input type="text" class="message-input" placeholder="Что вас интересует?">
+    <div class="input-container">
+        <input type="text" 
+               class="message-input" 
+               placeholder="Что вас интересует?" 
+               aria-label="Введите сообщение">
     </div>
 
     <div class="settings-menu" id="settingsMenu">
+        <div class="settings-header">
+            <button class="back-button" onclick="toggleSettings()">
+                <span>←</span>
+                <span>Назад</span>
+            </button>
+            <h2 class="settings-title">Настройки</h2>
+        </div>
+
         <div class="settings-item">
             <span>Подписка</span>
             <span>1 TON / 5 USDT</span>
@@ -248,20 +316,6 @@
         <div class="settings-item" onclick="openSupport()">
             <span>Поддержка</span>
             <span>@goodluck003</span>
-        </div>
-    </div>
-
-    <div class="voice-screen" id="voiceScreen">
-        <div class="voice-indicator">
-            <div class="voice-dot"></div>
-            <div class="voice-dot" style="animation-delay: 0.2s"></div>
-            <div class="voice-dot" style="animation-delay: 0.4s"></div>
-            <div class="voice-dot" style="animation-delay: 0.6s"></div>
-            <div class="voice-dot" style="animation-delay: 0.8s"></div>
-        </div>
-        <div class="voice-timer">00:00 / 02:00</div>
-        <div class="voice-control" onclick="stopVoiceRecording()">
-            <span style="color: white; font-size: 24px">⏹</span>
         </div>
     </div>
 
