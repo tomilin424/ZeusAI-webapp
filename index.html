@@ -11,22 +11,47 @@
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
-            padding: 16px;
+            padding: 20px;
+            padding-bottom: 80px;
         }
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 0;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin: 0;
         }
         .settings-icon {
             font-size: 24px;
             color: #8E8E93;
             cursor: pointer;
+            padding: 8px;
+        }
+        .model-selector {
+            background-color: #1E1F25;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .model-icon {
+            width: 32px;
+            height: 32px;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
         .voice-button {
             background-color: #4B6BFB;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px;
             margin: 16px 0;
             display: flex;
@@ -34,16 +59,47 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .voice-button:hover {
-            background-color: #3a54d6;
-        }
         .chat-item {
             background-color: #1E1F25;
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 16px;
-            margin: 8px 0;
+            margin: 12px 0;
             cursor: pointer;
-            transition: background-color 0.3s;
+        }
+        .chat-item h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .chat-item p {
+            margin: 0;
+            font-size: 14px;
+            color: #8E8E93;
+        }
+        .input-area {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px 20px;
+            background-color: #17181C;
+            border-top: 1px solid #2a2b33;
+        }
+        .message-input {
+            width: 100%;
+            background-color: #1E1F25;
+            border: none;
+            border-radius: 14px;
+            padding: 16px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+        .message-input::placeholder {
+            color: #8E8E93;
+        }
+        .voice-button:hover {
+            background-color: #3a54d6;
         }
         .chat-item:hover {
             background-color: #2a2b33;
@@ -181,6 +237,43 @@
             justify-content: center;
             cursor: pointer;
         }
+        .payment-info {
+            padding: 12px;
+            background-color: #2a2b33;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        .balance-info {
+            color: #4B6BFB;
+            font-weight: bold;
+        }
+        .email-input {
+            width: 100%;
+            background-color: #2a2b33;
+            border: none;
+            border-radius: 8px;
+            padding: 8px;
+            color: white;
+            margin-top: 8px;
+        }
+        .language-selector {
+            display: flex;
+            gap: 8px;
+        }
+        .language-option {
+            padding: 8px;
+            background-color: #2a2b33;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .language-option.active {
+            background-color: #4B6BFB;
+        }
+        .referral-info {
+            font-size: 14px;
+            color: #8E8E93;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -190,7 +283,7 @@
     </div>
 
     <div class="model-selector">
-        <div class="model-icon">🤖</div>
+        <div class="model-icon">👾</div>
         <span>GPT-4o Mini</span>
     </div>
 
@@ -217,37 +310,34 @@
 
     <div class="settings-menu" id="settingsMenu">
         <div class="settings-item">
-            <span>Free подписка</span>
-            <span>Бесплатно</span>
+            <span>Подписка</span>
+            <div class="payment-info">
+                <div>1 TON или 5 USDT / месяц</div>
+                <button onclick="payWithCrypto()">Оплатить</button>
+            </div>
         </div>
         <div class="settings-item">
             <span>Баланс запросов</span>
-            <span>∞</span>
-        </div>
-        <div class="settings-item">
-            <span>Мои роли</span>
+            <span class="balance-info">5 запросов</span>
         </div>
         <div class="settings-item">
             <span>Пригласить друга</span>
-            <span>0.00₽</span>
-        </div>
-        <div class="settings-item">
-            <span>Тема</span>
-            <span>Темная</span>
+            <div class="referral-info">30% кешбэк с покупок друзей</div>
         </div>
         <div class="settings-item">
             <span>Язык</span>
-            <span>Русский</span>
+            <div class="language-selector">
+                <div class="language-option active" onclick="changeLanguage('ru')">RU</div>
+                <div class="language-option" onclick="changeLanguage('en')">EN</div>
+            </div>
         </div>
         <div class="settings-item">
             <span>Почта</span>
-            <span>Не указана</span>
+            <input type="email" class="email-input" placeholder="Введите email" onchange="saveEmail(this.value)">
         </div>
-        <div class="settings-item">
+        <div class="settings-item" onclick="openSupport()">
             <span>Поддержка</span>
-        </div>
-        <div class="settings-item">
-            <span>Наш канал</span>
+            <span>@goodluck003</span>
         </div>
     </div>
 
@@ -271,64 +361,105 @@
         tg.ready();
 
         let isRecording = false;
-        let recordingTimer;
-        let startTime;
-
-        function toggleSettings() {
-            const menu = document.getElementById('settingsMenu');
-            menu.classList.toggle('active');
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let currentLanguage = 'ru';
+        
+        // Загружаем историю чатов
+        function loadChatHistory() {
+            const chatHistory = localStorage.getItem('chatHistory');
+            if (chatHistory) {
+                const chats = JSON.parse(chatHistory);
+                const chatsContainer = document.getElementById('chats');
+                chatsContainer.innerHTML = '';
+                chats.forEach((chat, index) => {
+                    chatsContainer.innerHTML += `
+                        <div class="chat-item" onclick="openChat(${index + 1})">
+                            <h3>Чат #${index + 1}</h3>
+                            <p>Чат начат с AI-моделью GPT-4o Mini</p>
+                        </div>
+                    `;
+                });
+            }
         }
 
-        function startVoiceRecording() {
-            const screen = document.getElementById('voiceScreen');
-            screen.classList.add('active');
-            isRecording = true;
-            startTime = Date.now();
-            updateTimer();
+        // Запись голоса
+        async function startVoiceRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob);
+                    
+                    try {
+                        // Здесь будет отправка аудио на сервер для распознавания
+                        // и последующая отправка текста в GPT
+                        const response = await fetch('/api/transcribe', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const text = await response.text();
+                        sendMessage(text);
+                    } catch (error) {
+                        console.error('Error processing voice:', error);
+                    }
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                document.getElementById('voiceScreen').classList.add('active');
+                startTime = Date.now();
+                updateTimer();
+            } catch (error) {
+                console.error('Error starting voice recording:', error);
+            }
         }
 
         function stopVoiceRecording() {
-            const screen = document.getElementById('voiceScreen');
-            screen.classList.remove('active');
-            isRecording = false;
-            clearTimeout(recordingTimer);
-        }
-
-        function updateTimer() {
-            if (!isRecording) return;
-            
-            const elapsed = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(elapsed / 60);
-            const seconds = elapsed % 60;
-            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            
-            document.querySelector('.voice-timer').textContent = `${timeStr} / 02:00`;
-            
-            if (elapsed < 120) {
-                recordingTimer = setTimeout(updateTimer, 1000);
-            } else {
-                stopVoiceRecording();
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                document.getElementById('voiceScreen').classList.remove('active');
+                clearTimeout(recordingTimer);
             }
         }
 
-        function openChat(id) {
-            tg.sendData(`open_chat:${id}`);
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.language-option').forEach(el => {
+                el.classList.toggle('active', el.textContent === lang.toUpperCase());
+            });
+            // Здесь логика перевода интерфейса
         }
 
-        document.querySelector('.send-button').addEventListener('click', function() {
-            const input = document.querySelector('.message-input');
-            if (input.value.trim()) {
-                tg.sendData(`message:${input.value}`);
-                input.value = '';
-            }
-        });
+        function saveEmail(email) {
+            localStorage.setItem('userEmail', email);
+        }
 
-        document.querySelector('.message-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && this.value.trim()) {
-                tg.sendData(`message:${this.value}`);
-                this.value = '';
-            }
-        });
+        function openSupport() {
+            window.open('https://t.me/goodluck003', '_blank');
+        }
+
+        function payWithCrypto() {
+            // Здесь будет логика оплаты криптовалютой
+        }
+
+        // Загружаем историю при старте
+        loadChatHistory();
+        
+        // Загружаем сохраненный email
+        const savedEmail = localStorage.getItem('userEmail');
+        if (savedEmail) {
+            document.querySelector('.email-input').value = savedEmail;
+        }
     </script>
 </body>
 </html> 
